@@ -1,0 +1,31 @@
+{
+  "name": "tetris",
+  "version": "1.0.0",
+  "description": "A tetris game, built with AngularJS",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ivan-shulev/tetris.git"
+  },
+  "author": "Ivan Shulev",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ivan-shulev/tetris/issues"
+  },
+  "homepage": "https://github.com/ivan-shulev/tetris#readme",
+  "devDependencies": {
+    "bootstrap-sass": "^3.3.7",
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^3.1.1",
+    "gulp-bootlint": "^0.8.0",
+    "gulp-concat": "^2.6.0",
+    "gulp-imagemin": "^3.0.3",
+    "gulp-jade": "^1.1.0",
+    "gulp-live-server": "0.0.30",
+    "gulp-minify": "0.0.14",
+    "gulp-sass": "^2.3.2"
+  }
+}
