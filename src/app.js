@@ -22,6 +22,7 @@
 		};
 	};
 	function createFigureObject(centerPosition, compound){
+		console.log(centerPosition);
 		var figure = {};
 		if(compound.left){
 			figure.currentRow = [centerPosition-1, centerPosition];
@@ -67,11 +68,11 @@
 		}
 	};
 
+
 	$(function() {
-		var figure = new FigureT();
-		console.log(figure);
-		var currentRow = 1;
 		var currentBoxNum = 6;
+		var figure = new FigureT();
+		var currentRow = 1;
 		var playfield = $('#playfield');
 		var tbody = playfield.children().first();
 		var frow = tbody.children().first();
@@ -80,15 +81,51 @@
 		
 		drawFigure(currentRow, tbody, mappedFigure);
 
-		console.log(mappedFigure);
+
+		function moveLeft(){
+			currentBoxNum--;
+		};
+
+		function moveRight(){
+			currentBoxNum++;
+		};
+
+		$(document).keydown(function(e) {
+			switch(e.which) {
+				case 37: // left
+					moveLeft();
+					moveFigureDown();
+				break;
+
+				case 38: // up
+				break;
+
+				case 39: // right
+					moveRight();
+					moveFigureDown();
+				break;
+
+				case 40: // down
+				break;
+
+				default: return; // exit this handler for other keys
+			}
+			e.preventDefault(); // prevent the default action (scroll / move caret)
+		});
+
+		function moveFigureDown(){
+			mappedFigure = createFigureObject(currentBoxNum, figure.figureCompound);
+			removePreviousBoxes(tbody, currentRow);
+			drawFigure(currentRow, tbody, mappedFigure);
+		}
+
 		var intervalMoveDown = setInterval(function(){
 			currentRow++;
 			if(currentRow == 22){
 				clearInterval(intervalMoveDown);
 				return;
 			}
-			removePreviousBoxes(tbody, currentRow);
-			drawFigure(currentRow, tbody, mappedFigure);
+			moveFigureDown();
 		}, 1000);
 	});
 })(jQuery);
