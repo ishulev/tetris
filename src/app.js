@@ -22,7 +22,6 @@
 		};
 	};
 	function createFigureObject(centerPosition, compound){
-		console.log(centerPosition);
 		var figure = {};
 		if(compound.left){
 			figure.currentRow = [centerPosition-1, centerPosition];
@@ -60,10 +59,12 @@
 
 	function drawFigure(currentRow, tbody, mappedFigure){
 		var frow = tbody.children(':nth-child(' + currentRow + ')');
+		clearRow(frow);
 		drawSquares(frow, mappedFigure.currentRow);
 		if(mappedFigure.nextRow) {
 			currentRow++;
 			var nextRow = tbody.children(':nth-child(' + currentRow + ')');
+			clearRow(nextRow);
 			drawSquares(nextRow, mappedFigure.nextRow);
 		}
 	};
@@ -91,6 +92,9 @@
 		};
 
 		$(document).keydown(function(e) {
+			if(currentRow == 22){
+				return;
+			}
 			switch(e.which) {
 				case 37: // left
 					moveLeft();
@@ -115,7 +119,6 @@
 
 		function moveFigureDown(){
 			mappedFigure = createFigureObject(currentBoxNum, figure.figureCompound);
-			removePreviousBoxes(tbody, currentRow);
 			drawFigure(currentRow, tbody, mappedFigure);
 		}
 
@@ -125,6 +128,7 @@
 				clearInterval(intervalMoveDown);
 				return;
 			}
+			removePreviousBoxes(tbody, currentRow);
 			moveFigureDown();
 		}, 1000);
 	});
