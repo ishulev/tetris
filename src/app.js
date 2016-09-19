@@ -18,11 +18,15 @@
 		this.figureCompound = {
 			left: 1,
 			right: 1,
-			bottom: 1
+			bottom: 1,
+			top: 1
 		};
 	};
 	function createFigureObject(centerPosition, compound){
 		var figure = {};
+		if(compound.top){
+			figure.previousRow = [centerPosition];
+		}
 		if(compound.left){
 			figure.currentRow = [centerPosition-1, centerPosition];
 		}
@@ -62,10 +66,16 @@
 		clearRow(frow);
 		drawSquares(frow, mappedFigure.currentRow);
 		if(mappedFigure.nextRow) {
-			currentRow++;
-			var nextRow = tbody.children(':nth-child(' + currentRow + ')');
+			var nextRowNum = currentRow+1;
+			var nextRow = tbody.children(':nth-child(' + nextRowNum + ')');
 			clearRow(nextRow);
 			drawSquares(nextRow, mappedFigure.nextRow);
+		}
+		if(mappedFigure.previousRow) {
+			var previousRowNum = currentRow-1;
+			var previousRow = tbody.children(':nth-child(' + previousRowNum + ')');
+			clearRow(previousRow);
+			drawSquares(previousRow, mappedFigure.previousRow);
 		}
 	};
 
