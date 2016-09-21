@@ -11,6 +11,10 @@
 
 	var Figure = function() {
 		this.rotation = Math.random() < 0.5 ? true : false;
+		this.boundaries = {
+			left: 1,
+			right: 1
+		};
 	};
 
 	function FigureT(){
@@ -18,23 +22,46 @@
 		this.figureCompound = {
 			left: 1,
 			right: 1,
-			bottom: 1,
-			top: 1
+			bottom: 1
+		};
+	};
+
+	function FigureZ(){
+		Figure.call(this);
+		this.figureCompound = {
+			right: 1,
+			bottom: {
+				center: 1,
+				left: 1
+			}
 		};
 	};
 	function createFigureObject(centerPosition, compound){
-		var figure = {};
+		var figure = {
+			currentRow: [centerPosition]
+		};
 		if(compound.top){
 			figure.previousRow = [centerPosition];
 		}
 		if(compound.left){
-			figure.currentRow = [centerPosition-1, centerPosition];
+			figure.currentRow.push(centerPosition-1);
 		}
 		if(compound.right) {
 			figure.currentRow.push(centerPosition + 1);
 		}
 		if(compound.bottom) {
-			figure.nextRow = [centerPosition];
+			if(compound.bottom !== null && typeof compound.bottom === 'object'){
+				figure.nextRow = [];
+				if(compound.bottom.left){
+					figure.nextRow.push(centerPosition-1);
+				}
+				if(compound.bottom.center) {
+					figure.nextRow.push(centerPosition);
+				}
+			}
+			else {
+				figure.nextRow = [centerPosition];
+			}
 		}
 		return figure;
 	};
@@ -42,6 +69,9 @@
 	// Taken from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Introduction_to_Object-Oriented_JavaScript#Inheritance
 	FigureT.prototype = Object.create(Figure.prototype);
 	FigureT.prototype.constructor = FigureT;
+
+	FigureZ.prototype = Object.create(Figure.prototype);
+	FigureZ.prototype.constructor = FigureZ;
 
 	function drawSquares(frow, currentRow){
 		for(var i=0; i < currentRow.length; i++){
@@ -79,10 +109,23 @@
 		}
 	};
 
+	function withinBoundariesLeft(currentBoxNum, figureObject){
+		if( (currentBoxNum - figureObject.boundaries.left) < 2 ) {
+			return false;
+		}
+		return true;
+	}
+
+	function withinBoundariesRigth(currentBoxNum, figureObject){
+		if( (currentBoxNum + figureObject.boundaries.right) > 11 ) {
+			return false;
+		}
+		return true;
+	}
 
 	$(function() {
 		var currentBoxNum = 6;
-		var figure = new FigureT();
+		var figure = new FigureZ();
 		var currentRow = 1;
 		var playfield = $('#playfield');
 		var tbody = playfield.children().first();
@@ -91,7 +134,6 @@
 		var mappedFigure = createFigureObject(currentBoxNum, figure.figureCompound);
 		
 		drawFigure(currentRow, tbody, mappedFigure);
-
 
 		function moveLeft(){
 			currentBoxNum--;
@@ -107,16 +149,20 @@
 			}
 			switch(e.which) {
 				case 37: // left
-					moveLeft();
-					moveFigureDown();
+					if(withinBoundariesLeft(currentBoxNum,figure)){
+						moveLeft();
+						moveFigureDown();
+					}
 				break;
 
 				case 38: // up
 				break;
 
 				case 39: // right
-					moveRight();
-					moveFigureDown();
+					if(withinBoundariesRigth(currentBoxNum,figure)){
+						moveRight();
+						moveFigureDown();
+					}
 				break;
 
 				case 40: // down
